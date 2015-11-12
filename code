@@ -1,0 +1,127 @@
+/*
+============================================================================
+ Name        : c_advanture.cpp
+ Author      : 
+ Version     :
+ Copyright   : 
+ Description :
+ First Build : 12.11.2015
+
+ Used goto statements:
+
+Statement:
+unexpectederr_restart_full
+Action:
+Programm jumps here when an unexpected error occurred and forces a complete restart [ALL PLAYER ACTIONS WILL BE WHIPED USE WITH CAUTION!!!!]
+
+============================================================================
+*/
+
+
+
+//INCLUDING
+
+
+#include <stdio.h>	// includes stdio öib for all printf / scanf functions
+
+
+//============================================================================
+
+//Variable definitions
+
+int chapnr=0;	// this value will store the chapter the player is currently in [GENERAL USE]
+int questnr=0;	// this value will store the quest the player is currently in	[GENERAL USE]
+
+//============================================================================
+
+// Function definitions
+void chapter0(int questnr);		//This is the function for chapter '0' it returns (nothing) an has (questnr) as input
+
+//============================================================================
+
+
+// this is the main function. In the main function there are as few actions as possible. All bigger actions are seperate functions!
+int main()	
+{
+
+unexpectederr_restart_full:	// Programm jumps here when an unexpected error occurred and forces a complete restart [ALL PLAYER ACTIONS WILL BE WHIPED USE WITH CAUTION!!!!]
+
+	fflush(stdin);	// Making shure there is nothing in the input buffer
+
+/*#### Anmerkungen ###
+	mehrere speicherstände die mit einer spieler id verbunden sind - Jan 12.11.2015
+	schwierigkeitslevel wählbar - Jan 12.11.2015
+*/
+
+	char player_choice_y_n;		//Char for storing the player choice (yes or no)
+	int input_continue=0;		//input_continue value used to check if the user wants to continue
+
+	//First messages are displayed
+
+	while(input_continue!=1)	//The Player can input his choices until he is satisfied
+	{
+	printf("Hello Player\n");
+	printf("Which chapter do you want to play?\t");		//Here the player can choose the chapter he wants to play
+	scanf("%d", &chapnr);
+	fflush(stdin);
+	printf("\nYou selected chapter %d\n", chapnr);
+	printf("Which quest do you want to play?\t");		//Here the player can choose the quest he wants to play
+	scanf("%d", &questnr);
+	fflush(stdin);
+	printf("\nYou selected quest %d\n", questnr);
+	printf("Do you want to continue? [y] / [n]\t");		//Player has the chance to cancel his inputs
+	player_choice_y_n=getchar(); 
+
+	if(player_choice_y_n== 'y')
+		{
+			input_continue=1;	//If the player is satisfied the programm will contunie
+		}
+	else
+		{
+			printf("\nActions Cancelled by the Player\n\nRestarting...\nPress anny key to continue!\n\n\n");	//If the player is not satisfied the chapter and quest enter dialogue will restart
+			getchar();
+			getchar();
+			input_continue==0;
+		}
+	}
+
+	//###################################################
+
+
+
+
+
+	//###################################################
+
+	switch(chapnr)	//Based on the chapter the player entered the chapter is loaded ant the quest is handed over
+	{
+	case(0):
+		chapter0(questnr);
+		break;
+	default:
+		printf("\n\nAn unexpected error occurred\nRestarting...\n\n");
+		goto unexpectederr_restart_full;
+	}
+
+
+
+
+	return 0;
+
+}
+
+void chapter0(int questnr)
+{
+	switch(questnr)
+	{
+	case(0):
+		//here will be quest 0
+	default:
+	break;
+	}
+}
+
+
+
+
+
