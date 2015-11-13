@@ -1,63 +1,246 @@
-#include <fstream>
-#include <iostream>
+/*
+============================================================================
+ Name        : c_advanture.cpp
+ Author      : 
+ Version     :
+ Copyright   : 
+ Description :
+ First Build : 12.11.2015
+
+ Changelog:
+	13.11.2015 Added player_name feature, Added save feature, Added loading feature, Added plausibility check for questions
+
+
+ Useful goto statements:
+
+Statement:
+unexpectederr_restart_full
+Action:
+Programm jumps here when an unexpected error occurred and forces a complete restart [ALL PLAYER ACTIONS WILL BE WHIPED USE WITH CAUTION!!!!]
+
+============================================================================
+*/
+
+
+
+//INCLUDING
+
+
+#include <stdio.h>	// includes stdio for all printf / scanf functions
+#include <fstream>	// includes fstream for writing / reading to txt files
+#include <iostream>	// includes iostream for writing / reading to txt files
+
+
+//============================================================================
+
+//Variable definitions
+
+int chapnr=0;	// this value will store the chapter the player is currently in [GENERAL USE]
+int questnr=0;	// this value will store the quest the player is currently in	[GENERAL USE]
+char player_namE[20];		//Array which stores the players name
+
+//============================================================================
+
+// Function definitions
+void chapter0(int questnr);		//This is the function for chapter '0' it returns (nothing) an has (questnr) as input
+int save(char player_namE[],int chapnr,int questnr);	//This is the function to save the game it returns (1) or (0) to check if the save progress worked it has all player values as input
+int load(void);		//This is the function to load the game it returns (1) or (0) to check if the load progress worked //### in zukunft laden anhand des spielernamens??###
+void gamestart();	//This is the function to start the game. Contains all actions to set up the game
+//============================================================================
 
 using namespace std;
 
-int wertE [10][2];
 
-int main()
+// this is the main function. In the main function there are as few actions as possible. All bigger actions are seperate functions!
+int main()	
 {
-  char namE[] = "Testname Bernd" ;
-  int i = 5;
 
-  int zahl;
-  char nameo[20];
+unexpectederr_restart_full:	// Programm jumps here when an unexpected error occurred and forces a complete restart [ALL PLAYER ACTIONS WILL BE WHIPED USE WITH CAUTION!!!!]
 
-  //Creates an instance of ofstream, and opens example.txt
+	//###################################################
 
-  ofstream fileout ( "example.txt" );	// Outputs to example.txt through file1
+	gamestart();
 
-  fileout << namE << "\n"; //prints the name
-  fileout << i << "\n";
-  fileout << "\n\nEND OF FILE - nothing to see here-";
+
+
+	//###################################################
+
+	switch(chapnr)	//Based on the chapter the player entered the chapter is loaded ant the quest is handed over
+	{
+	case(0):
+		chapter0(questnr);
+		break;
+	default:
+		printf("\n\nAn unexpected error occurred\nRestarting...\n\n");
+		goto unexpectederr_restart_full;
+	}
+
+
+
+
+	return 0;
+
+}
+
+void gamestart()
+{
 	
-	  
-	  
-	// fout << flush; //write to file but keep it open
+	fflush(stdin);	// Making shure there is nothing in the input buffer
 
-  
-  fileout.close();	// write to file and close the file stream
+/*#### Anmerkungen ###
+	mehrere speicherstände die mit einer spieler id verbunden sind - Jan 12.11.2015
+	schwierigkeitslevel wählbar - Jan 12.11.2015
+*/
 
+	char player_choice_y_n;		//Char for storing the players choice (yes or no)
+	char player_choice_char;	//Char for stroing the players cooice
+	int input_continue=0;		//input_continue value used to check if the user wants to continue
+	
 
+	//First messages are displayed
+fail1:
+	printf("\nDo you want to load the game or start a new one? [n]ew [l]oad\n");
+	fflush(stdin);
+	player_choice_char=getchar();
+	fflush(stdin);
 
-  
-  ifstream filein ( "example.txt" );	//Opens for reading the file
+	int i=0;
+	switch(player_choice_char)
+	{
+		case('l'):			
+			i=load();	//loads game
+			if(i==0)	{printf("\nLoading complete!\n");}
+			if(i==1)	{printf("\nLoading failed!\n");}
 
-  //reads until there is a white space in the file
-  
-  filein.getline(nameo,20);	//Reads one string from the file
-  filein >> zahl;
+			printf("\nYou are: %s\n", player_namE);
+			printf("\nYou will play chapter %d, quest %d\n", chapnr, questnr);
+			printf("\nIs everything correct? [y] / [n]\t");			
+			fflush(stdin);
+			player_choice_y_n=getchar();
+			fflush(stdin);
+				switch(player_choice_y_n)
+				{
+				case('y'):
+					goto continue_mark;	//skips the following entries
+					break;
+				case('n'):
+					printf("\n Creating new game: \n\n\n");
+					goto not_everything_correct;	//starts the new entries
+					break;
+				default:
+					printf("\nYour answer could not be recognized\n");	//plausibility chack fail restarts question
+					goto fail1;
+					break;
+				}
+			break;
+		case('n'):
+not_everything_correct:
+		while(input_continue!=1)	//The Player can input his choices until he is satisfied
+		{
+			printf("\nHello Player! Whats your name? (max. 20 char, no blanks, or specials)\n");
+			scanf("%s", &player_namE);	//Saves the players name
+			fflush(stdin);
+			printf("\nHello: %s!\n\n", player_namE);	//Greets the player with his name
+			printf("\n%s, which chapter do you want to play? (0-?)\t", player_namE);		//Here the player can choose the chapter he wants to play
+			scanf("%d", &chapnr);
+			fflush(stdin);
+			printf("\nYou selected chapter %d\n", chapnr);
+			printf("\n%s, which quest do you want to play? (0-?)\t", player_namE);		//Here the player can choose the quest he wants to play
+			scanf("%d", &questnr);
+			fflush(stdin);
+			printf("\nYou selected quest %d\n", questnr);
+fail0:
+			printf("\nDo you want to save and continue? [y] / [n]\t");		//Player has the chance to cancel his inputs
+			fflush(stdin);
+			player_choice_y_n=getchar();
+			fflush(stdin);
 
-  
-
-  cout <<"Name:\t" << nameo << "\n";
-  cout <<"Zahl:\t" << zahl << "\n";
-
-  cin.get();    // wait for a keypress
-
-  // b_file is closed implicitly here
-
-
-
-//  ifstream a_file ( "example.txt" );
-//
-//if ( !a_file.is_open() ) {
-//  // The file could not be opened
-//}
-//else {
-//  // Safely use the file stream
-//}
-
+			switch(player_choice_y_n)
+			{
+		case('y'):
+			input_continue=1;	//If the player is satisfied the programm will continnue
+			i=0;
+			i=save(player_namE, chapnr, questnr);	//saves the name, chapter and quest to a file returns 1 if failed
+			
+			if(i==0)	{printf("\nSaving complete!\n");}
+			if(i==1)	{printf("\nSaving failed!\n");}
+			break;
+		case('n'):
+			printf("\nActions cancelled by the Player\n\nRestarting...\nPress anny key to continue!\n\n\n");	//If the player is not satisfied the chapter and quest enter dialogue will restart
+			getchar();
+			getchar();
+			input_continue=0;
+			break;
+		default:
+			printf("\nYour answer could not be recognized\n");	//plausibility chack fail restarts question
+			goto fail0;
+			break;
+			}				
+		}
+		break;
+		default:
+		printf("\nYour answer could not be recognized\n");	//plausibility chack fail restarts question
+		goto fail1;
+		break;
+	}
+continue_mark:
 
 
 }
+int save( char player_namE[],int chapnr,int questnr)
+{
+	//Creates an instance of ofstream, and opens example.txt
+	ofstream fileout ( "Savegame.txt" );	// Outputs to Savegame.txt through fileout
+
+	if ( !fileout.is_open() ) //checks if file is writable
+	{
+	  return 1;
+	}
+	else {
+	fileout << player_namE << "\n"; //prints the Player name
+	fileout << chapnr << "\n";	//prints the chapternumber
+	fileout << questnr << "\n";	//prints the questnumber	
+	fileout << "\n\nEND OF FILE - nothing to see here-";
+	fileout.close();	// write to file and close the file stream
+	return 0;
+	}
+}
+
+
+
+int load(void)
+{
+	ifstream filein ( "Savegame.txt" );	//Opens for reading the file
+
+	if ( !filein.is_open() ) //checks if file is readable
+	{
+	  return 1;
+	}
+	else {
+	filein >> player_namE; //reads the Player name
+	filein >> chapnr;	//reads the chapternumber
+	filein >> questnr;	//reads the questnumber	
+	
+	filein.close();	// write to file and close the file stream
+	return 0;
+	}
+
+}
+
+void chapter0(int questnr)
+{
+	switch(questnr)
+	{
+	case(0):
+		//here will be quest 0
+	default:
+	break;
+	}
+}
+
+
+
+
+
+
+
