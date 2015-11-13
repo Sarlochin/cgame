@@ -1,127 +1,63 @@
-/*
-============================================================================
- Name        : c_advanture.cpp
- Author      : 
- Version     :
- Copyright   : 
- Description :
- First Build : 12.11.2015
+#include <fstream>
+#include <iostream>
 
- Used goto statements:
+using namespace std;
 
-Statement:
-unexpectederr_restart_full
-Action:
-Programm jumps here when an unexpected error occurred and forces a complete restart [ALL PLAYER ACTIONS WILL BE WHIPED USE WITH CAUTION!!!!]
+int wertE [10][2];
 
-============================================================================
-*/
-
-
-
-//INCLUDING
-
-
-#include <stdio.h>	// includes stdio öib for all printf / scanf functions
-
-
-//============================================================================
-
-//Variable definitions
-
-int chapnr=0;	// this value will store the chapter the player is currently in [GENERAL USE]
-int questnr=0;	// this value will store the quest the player is currently in	[GENERAL USE]
-
-//============================================================================
-
-// Function definitions
-void chapter0(int questnr);		//This is the function for chapter '0' it returns (nothing) an has (questnr) as input
-
-//============================================================================
-
-
-// this is the main function. In the main function there are as few actions as possible. All bigger actions are seperate functions!
-int main()	
+int main()
 {
+  char namE[] = "Testname Bernd" ;
+  int i = 5;
 
-unexpectederr_restart_full:	// Programm jumps here when an unexpected error occurred and forces a complete restart [ALL PLAYER ACTIONS WILL BE WHIPED USE WITH CAUTION!!!!]
+  int zahl;
+  char nameo[20];
 
-	fflush(stdin);	// Making shure there is nothing in the input buffer
+  //Creates an instance of ofstream, and opens example.txt
 
-/*#### Anmerkungen ###
-	mehrere speicherstände die mit einer spieler id verbunden sind - Jan 12.11.2015
-	schwierigkeitslevel wählbar - Jan 12.11.2015
-*/
+  ofstream fileout ( "example.txt" );	// Outputs to example.txt through file1
 
-	char player_choice_y_n;		//Char for storing the player choice (yes or no)
-	int input_continue=0;		//input_continue value used to check if the user wants to continue
+  fileout << namE << "\n"; //prints the name
+  fileout << i << "\n";
+  fileout << "\n\nEND OF FILE - nothing to see here-";
+	
+	  
+	  
+	// fout << flush; //write to file but keep it open
 
-	//First messages are displayed
-
-	while(input_continue!=1)	//The Player can input his choices until he is satisfied
-	{
-	printf("Hello Player\n");
-	printf("Which chapter do you want to play?\t");		//Here the player can choose the chapter he wants to play
-	scanf("%d", &chapnr);
-	fflush(stdin);
-	printf("\nYou selected chapter %d\n", chapnr);
-	printf("Which quest do you want to play?\t");		//Here the player can choose the quest he wants to play
-	scanf("%d", &questnr);
-	fflush(stdin);
-	printf("\nYou selected quest %d\n", questnr);
-	printf("Do you want to continue? [y] / [n]\t");		//Player has the chance to cancel his inputs
-	player_choice_y_n=getchar(); 
-
-	if(player_choice_y_n== 'y')
-		{
-			input_continue=1;	//If the player is satisfied the programm will contunie
-		}
-	else
-		{
-			printf("\nActions Cancelled by the Player\n\nRestarting...\nPress anny key to continue!\n\n\n");	//If the player is not satisfied the chapter and quest enter dialogue will restart
-			getchar();
-			getchar();
-			input_continue==0;
-		}
-	}
-
-	//###################################################
+  
+  fileout.close();	// write to file and close the file stream
 
 
 
+  
+  ifstream filein ( "example.txt" );	//Opens for reading the file
+
+  //reads until there is a white space in the file
+  
+  filein.getline(nameo,20);	//Reads one string from the file
+  filein >> zahl;
+
+  
+
+  cout <<"Name:\t" << nameo << "\n";
+  cout <<"Zahl:\t" << zahl << "\n";
+
+  cin.get();    // wait for a keypress
+
+  // b_file is closed implicitly here
 
 
-	//###################################################
 
-	switch(chapnr)	//Based on the chapter the player entered the chapter is loaded ant the quest is handed over
-	{
-	case(0):
-		chapter0(questnr);
-		break;
-	default:
-		printf("\n\nAn unexpected error occurred\nRestarting...\n\n");
-		goto unexpectederr_restart_full;
-	}
+//  ifstream a_file ( "example.txt" );
+//
+//if ( !a_file.is_open() ) {
+//  // The file could not be opened
+//}
+//else {
+//  // Safely use the file stream
+//}
 
 
-
-
-	return 0;
 
 }
-
-void chapter0(int questnr)
-{
-	switch(questnr)
-	{
-	case(0):
-		//here will be quest 0
-	default:
-	break;
-	}
-}
-
-
-
-
-
